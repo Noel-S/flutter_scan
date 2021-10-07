@@ -92,9 +92,9 @@ class _MyAppState extends State<MyApp> {
               width: 220,
               height: 400,
               child: ScanView(
+                scanLineColor: Colors.red,
                 controller: controller,
                 scanAreaScale: .7,
-                scanLineColor: Colors.green.shade400,
                 onCapture: (data) {
                   setState(() {
                     qrcode = data;

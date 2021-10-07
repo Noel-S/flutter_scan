@@ -21,14 +21,14 @@ class ScanView extends StatefulWidget {
   ScanView({
     this.controller,
     this.onCapture,
-    this.scanLineColor = Colors.green,
+    this.scanLineColor,
     this.scanAreaScale = 0.7,
   })  : assert(scanAreaScale <= 1.0, 'scanAreaScale must <= 1.0'),
         assert(scanAreaScale > 0.0, 'scanAreaScale must > 0.0');
 
   final ScanController? controller;
   final CaptureCallback? onCapture;
-  final Color scanLineColor;
+  final Color? scanLineColor;
   final double scanAreaScale;
 
   @override
@@ -45,10 +45,7 @@ class _ScanViewState extends State<ScanView> {
         viewType: 'chavesgu/scan_view',
         creationParamsCodec: StandardMessageCodec(),
         creationParams: {
-          "r": widget.scanLineColor.red,
-          "g": widget.scanLineColor.green,
-          "b": widget.scanLineColor.blue,
-          "a": widget.scanLineColor.opacity,
+          "lineColor": widget.scanLineColor?.value ?? 0,
           "scale": widget.scanAreaScale,
         },
         onPlatformViewCreated: (id) {
@@ -60,10 +57,7 @@ class _ScanViewState extends State<ScanView> {
         viewType: 'chavesgu/scan_view',
         creationParamsCodec: StandardMessageCodec(),
         creationParams: {
-          "r": widget.scanLineColor.red,
-          "g": widget.scanLineColor.green,
-          "b": widget.scanLineColor.blue,
-          "a": widget.scanLineColor.opacity,
+          "lineColor": widget.scanLineColor?.value ?? 0,
           "scale": widget.scanAreaScale,
         },
         onPlatformViewCreated: (id) {

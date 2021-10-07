@@ -1,9 +1,5 @@
 package com.chavesgu.scan;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -18,7 +14,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.animation.LinearInterpolator;
 
 import java.util.Map;
 
@@ -29,14 +24,14 @@ import static java.lang.Math.max;
 import static java.lang.Math.floor;
 
 public class ScanDrawView extends SurfaceView implements SurfaceHolder.Callback {
-    private String LOG_TAG = "scan";
-    private Activity activity;
+    private final String LOG_TAG = "scan";
+    private final Activity activity;
     private double vw;
     private double vh;
     private double areaX;
     private double areaY;
     private double areaWidth;
-    private int scanLineColor;
+    private final int scanLineColor;
     private double scale = .7;
     private float dpi;
     private boolean running;
@@ -47,14 +42,16 @@ public class ScanDrawView extends SurfaceView implements SurfaceHolder.Callback 
 
     public ScanDrawView(Context context, Activity activity, @Nullable Map<String, Object> args) {
         super(context);
+        Log.i(LOG_TAG, "scanLineColor: "+args.get("lineColor").getClass().getSimpleName());
 
         scale = (double) args.get("scale");
-        final int r = (int) args.get("r");
-        final int g = (int) args.get("g");
-        final int b = (int) args.get("b");
-        final double alpha = (double) args.get("a");
-        final int a = max(0, min(255, (int)floor(alpha * 256.0)));
-        scanLineColor = Color.argb(a, r, g, b);
+//        final int value = (int) args.get("lineColorValue");
+//        final int r = (int) args.get("r");
+//        final int g = (int) args.get("g");
+//        final int b = (int) args.get("b");
+//        final double alpha = (double) args.get("a");
+//        final int a = max(0, min(255, (int)floor(alpha * 256.0)));
+        scanLineColor = ((Long) args.get("lineColor")).intValue();
         this.activity = activity;
 
         getHolder().addCallback(this);
@@ -76,26 +73,27 @@ public class ScanDrawView extends SurfaceView implements SurfaceHolder.Callback 
         areaX = (vw - areaWidth) / 2;
         areaY = (vh - areaWidth) / 2;
 
-        DisplayMetrics dm = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        dpi = dm.density;
-
-        // init animate
-        final float scanLineWidth = (float) (areaWidth * 0.8);
-        final long duration = (long) (areaWidth/175/dpi*1.5*1000);
-        positionAnimator = ValueAnimator.ofFloat(0, scanLineWidth);
-        positionAnimator.setDuration(duration);
-        positionAnimator.setInterpolator(null);
-        positionAnimator.setRepeatMode(ValueAnimator.RESTART);
-        positionAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        positionAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                scanLinePositionValue = (float) valueAnimator.getAnimatedValue();
-//                Log.i(LOG_TAG, "scanLinePositionValue:"+scanLinePositionValue);
-                invalidate();
-            }
-        });
+        if (scanLineColor != 0) {
+            DisplayMetrics dm = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+            dpi = dm.density;
+            // init animate
+            final float scanLineWidth = (float) (areaWidth * 0.8);
+            final long duration = (long) (areaWidth/175/dpi*1.5*1000);
+            positionAnimator = ValueAnimator.ofFloat(0, scanLineWidth);
+            positionAnimator.setDuration(duration);
+            positionAnimator.setInterpolator(null);
+            positionAnimator.setRepeatMode(ValueAnimator.RESTART);
+            positionAnimator.setRepeatCount(ValueAnimator.INFINITE);
+            positionAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    scanLinePositionValue = (float) valueAnimator.getAnimatedValue();
+    //                Log.i(LOG_TAG, "scanLinePositionValue:"+scanLinePositionValue);
+                    invalidate();
+                }
+            });
+        }
     }
 
     @Override
@@ -134,25 +132,26 @@ public class ScanDrawView extends SurfaceView implements SurfaceHolder.Callback 
         final float scanLineY = (float) (vh - scanLineWidth)/2;
 
         if (scale < 1) {
-            Paint paint = new Paint();
-            paint.setColor(scanLineColor);
-            paint.setStrokeWidth(2*dpi);
-            paint.setStrokeCap(Paint.Cap.ROUND);
-            paint.setStrokeJoin(Paint.Join.ROUND);
-            paint.setStyle(Paint.Style.STROKE);
-            canvas.drawLine(x, y, x+shortWidth, y, paint);
-            canvas.drawLine(x, y, x, y+shortWidth, paint);
+            if (scanLineColor != 0) {
+                Paint paint = new Paint();
+                paint.setColor(scanLineColor);
+                paint.setStrokeWidth(2*dpi);
+                paint.setStrokeCap(Paint.Cap.ROUND);
+                paint.setStrokeJoin(Paint.Join.ROUND);
+                paint.setStyle(Paint.Style.STROKE);
+                canvas.drawLine(x, y, x+shortWidth, y, paint);
+                canvas.drawLine(x, y, x, y+shortWidth, paint);
 
-            canvas.drawLine(x+width, y, x+width-shortWidth, y, paint);
-            canvas.drawLine(x+width, y, x+width, y+shortWidth, paint);
+                canvas.drawLine(x+width, y, x+width-shortWidth, y, paint);
+                canvas.drawLine(x+width, y, x+width, y+shortWidth, paint);
 
-            canvas.drawLine(x+width, y+width, x+width-shortWidth, y+width, paint);
-            canvas.drawLine(x+width, y+width, x+width, y+width-shortWidth, paint);
+                canvas.drawLine(x+width, y+width, x+width-shortWidth, y+width, paint);
+                canvas.drawLine(x+width, y+width, x+width, y+width-shortWidth, paint);
 
-            canvas.drawLine(x, y+width, x+shortWidth, y+width, paint);
-            canvas.drawLine(x, y+width, x, y+width-shortWidth, paint);
-
-            // mask
+                canvas.drawLine(x, y+width, x+shortWidth, y+width, paint);
+                canvas.drawLine(x, y+width, x, y+width-shortWidth, paint);
+                // mask
+            }
             canvas.save();
             Path clipPath = new Path();
             clipPath.addRect(x-2,y-2,(float)(x+areaWidth+2),(float)(y+areaWidth+2),Path.Direction.CCW);
@@ -167,7 +166,7 @@ public class ScanDrawView extends SurfaceView implements SurfaceHolder.Callback 
             canvas.restore();
         }
 
-        if (running) {
+        if (running && scanLineColor != 0) {
             Paint scanPaint = new Paint();
             scanPaint.setColor(scanLineColor);
             scanPaint.setStrokeWidth(2*dpi);
