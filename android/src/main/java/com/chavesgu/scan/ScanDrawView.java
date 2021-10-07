@@ -51,7 +51,11 @@ public class ScanDrawView extends SurfaceView implements SurfaceHolder.Callback 
 //        final int b = (int) args.get("b");
 //        final double alpha = (double) args.get("a");
 //        final int a = max(0, min(255, (int)floor(alpha * 256.0)));
-        scanLineColor = ((Long) args.get("lineColor")).intValue();
+        if (args.get("lineColor").getClass().getSimpleName().equals("Long")) {
+            scanLineColor = ((Long) args.get("lineColor")).intValue();
+        } else {
+            scanLineColor = (int) args.get("lineColor");
+        }
         this.activity = activity;
 
         getHolder().addCallback(this);
