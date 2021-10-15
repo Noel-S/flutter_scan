@@ -41,11 +41,16 @@ public class ScanView: UIView,AVCaptureMetadataOutputObjectsDelegate,FlutterPlug
     
     let params = args as! NSDictionary;
     self.scale = params["scale"] as! CGFloat;
-    let r = params["r"] as! CGFloat;
-    let g = params["g"] as! CGFloat;
-    let b = params["b"] as! CGFloat;
-    let a = params["a"] as! CGFloat;
-    self.scanColor = UIColor(red: r / 255.0, green: g / 255.0, blue: b / 255.0, alpha: a);
+    let lineColorValue = params["lineColor"] as! Int64;
+      if lineColorValue != 0 {
+          self.scanColor = UIColor(
+            red: CGFloat((lineColorValue >> 16) & 0xFF)/255,
+            green: CGFloat((lineColorValue >> 8) & 0xFF)/255,
+            blue: CGFloat(lineColorValue & 0xFF)/255,
+            alpha: CGFloat((lineColorValue >> 24) & 0xFF)/255
+          );
+      }
+    
     
     let layer = AVCaptureVideoPreviewLayer(session: self.session!);
     self.captureLayer = layer;
@@ -256,7 +261,10 @@ public class ScanView: UIView,AVCaptureMetadataOutputObjectsDelegate,FlutterPlug
     self.captureLayer?.frame = self.bounds;
     self.vw = self.bounds.width;
     self.vh = self.bounds.height;
-    self.drawScanArea();
+      if (self.scanColor != nil) {
+          self.drawScanArea();
+      }
+    
     if !self.loaded {
       self.load();
     }

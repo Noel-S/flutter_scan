@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -77,7 +75,7 @@ class _MyAppState extends State<MyApp> {
                   onPressed: () async {
                     List<Media>? res = await ImagesPicker.pick();
                     if (res != null) {
-                      String? str = await Scan.parse(res[0].path!);
+                      String? str = await Scan.parse(res[0].path);
                       if (str != null) {
                         setState(() {
                           qrcode = str;
@@ -93,6 +91,7 @@ class _MyAppState extends State<MyApp> {
               height: 400,
               child: ScanView(
                 controller: controller,
+                // scanLineColor: Colors.red,
                 scanAreaScale: .7,
                 onCapture: (data) {
                   setState(() {
