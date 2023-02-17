@@ -37,15 +37,10 @@ public class ScanView: UIView,AVCaptureMetadataOutputObjectsDelegate,FlutterPlug
     self.session = AVCaptureSession();
     self.channel = FlutterMethodChannel(name: "chavesgu/scan/method_\(viewId)", binaryMessenger: registrar.messenger());
     registrar.addMethodCallDelegate(self, channel: self.channel!);
-//    registrar.addApplicationDelegate(self);
     
     let params = args as! NSDictionary;
     self.scale = params["scale"] as! CGFloat;
-    let r = params["r"] as! CGFloat;
-    let g = params["g"] as! CGFloat;
-    let b = params["b"] as! CGFloat;
-    let a = params["a"] as! CGFloat;
-    self.scanColor = UIColor(red: r / 255.0, green: g / 255.0, blue: b / 255.0, alpha: a);
+    self.scanColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0);
     
     let layer = AVCaptureVideoPreviewLayer(session: self.session!);
     self.captureLayer = layer;
@@ -71,7 +66,6 @@ public class ScanView: UIView,AVCaptureMetadataOutputObjectsDelegate,FlutterPlug
   
   private func configSession() {
     do {
-//      self.session!.beginConfiguration();
       // add input
       var defaultVideoDevice: AVCaptureDevice?;
       if let cameraDevice =  AVCaptureDevice.default(for: .video)  {
@@ -100,11 +94,7 @@ public class ScanView: UIView,AVCaptureMetadataOutputObjectsDelegate,FlutterPlug
       
       self.session!.sessionPreset = AVCaptureSession.Preset.high;
       self.setScanArea();
-//      self.session!.commitConfiguration();
       self.session!.startRunning();
-//      self.queue!.async {
-//        self.session!.startRunning();
-//      }
     } catch {
       print("Couldn't create video device input: \(error)")
     }
@@ -125,9 +115,9 @@ public class ScanView: UIView,AVCaptureMetadataOutputObjectsDelegate,FlutterPlug
   
   @objc func sessionDidStart() {
     self.isSessionRun = true;
-    if self.vw>0, self.scanShapeLayer==nil{
+    if self.vw > 0, self.scanShapeLayer==nil{
       let areaWidth = min(self.vw, self.vh) * self.scale;
-      self.drawScanLine(areaWidth: areaWidth);
+      // self.drawScanLine(areaWidth: areaWidth);
       self.needDelScanLine = false;
     }
   }
@@ -194,7 +184,6 @@ public class ScanView: UIView,AVCaptureMetadataOutputObjectsDelegate,FlutterPlug
       
       path.move(to: CGPoint(x: x + areaWidth, y: y + areaWidth - joinWidth));
       path.addLine(to: CGPoint(x: x + areaWidth, y: y + areaWidth - shortWidth));
-
       
       let shapeLayer = CAShapeLayer();
       shapeLayer.frame = self.bounds;
@@ -208,9 +197,9 @@ public class ScanView: UIView,AVCaptureMetadataOutputObjectsDelegate,FlutterPlug
     }
     
     // 绘制扫描线
-    if !self.needDelScanLine {
-      self.drawScanLine(areaWidth: areaWidth);
-    }
+    // if !self.needDelScanLine {
+    //   self.drawScanLine(areaWidth: areaWidth);
+    // }
   }
   
   private func drawScanLine(areaWidth: CGFloat) {
