@@ -245,7 +245,10 @@ public class ScanView: UIView,AVCaptureMetadataOutputObjectsDelegate,FlutterPlug
     self.captureLayer?.frame = self.bounds;
     self.vw = self.bounds.width;
     self.vh = self.bounds.height;
-    self.drawScanArea();
+      if (self.scanColor != nil) {
+          self.drawScanArea();
+      }
+    
     if !self.loaded {
       self.load();
     }
