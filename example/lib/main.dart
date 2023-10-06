@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:scan/scan.dart';
-import 'package:images_picker/images_picker.dart';
+// import 'package:images_picker/images_picker.dart';
 
 void main() {
   runApp(MyApp());
@@ -72,20 +70,20 @@ class _MyAppState extends State<MyApp> {
                     controller.resume();
                   },
                 ),
-                ElevatedButton(
-                  child: Text("parse from image"),
-                  onPressed: () async {
-                    List<Media>? res = await ImagesPicker.pick();
-                    if (res != null) {
-                      String? str = await Scan.parse(res[0].path!);
-                      if (str != null) {
-                        setState(() {
-                          qrcode = str;
-                        });
-                      }
-                    }
-                  },
-                ),
+                // ElevatedButton(
+                //   child: Text("parse from image"),
+                //   onPressed: () async {
+                //     List<Media>? res = await ImagesPicker.pick();
+                //     if (res != null) {
+                //       String? str = await Scan.parse(res[0].path!);
+                //       if (str != null) {
+                //         setState(() {
+                //           qrcode = str;
+                //         });
+                //       }
+                //     }
+                //   },
+                // ),
               ],
             ),
             Container(

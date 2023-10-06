@@ -7,3 +7,14 @@
 
 build/
 example/build/
+.github/
+.idea/
+.vscode/
+# Ignore all files in the .idea folder
+.idea/*
+# Ignore all files in the .vscode folder
+.vscode/*
+# Ignore all files in the .github folder
+.github/*
+# Ignore all files in the build folder
+build/*
