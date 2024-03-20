@@ -51,7 +51,7 @@ public class ScanViewNew extends BarcodeView implements PluginRegistry.RequestPe
 
         this.context = context;
         this.activity = activity;
-        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        // activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         this.activityPluginBinding = activityPluginBinding;
         activityPluginBinding.addRequestPermissionsResultListener(this);
         this.scale = (double) args.get("scale");
